@@ -102,17 +102,21 @@ foreach (var partnersCity in partnersCitiesList)
     // Überprüfen Sie, ob die Stadt Verbindungen zu anderen Städten hat
     foreach (var partner in partnersCity.Partners)
     {
-        // Suchen Sie die Partnerstadt in der partnersCitiesList
         var partnerCity = partnersCitiesList.FirstOrDefault(pc => pc.City.Name == partner);
-
-        // Überprüfen Sie, ob die Partnerstadt gefunden wurde und die Kapazität der veranstaltenden Stadt größer als 0 ist
-        if (partnerCity != null && partnersCity.City.PartyCapacity > 0)
+        if (partnerCity != null && partnersCity.City.PartyCapacity > 0 && partnerCity.City.PartyCapacity > 0)
         {
-            // Fügen Sie die Party in die Liste der Partys der veranstaltenden Stadt ein
-            cityParties.Add($"Party with {partnerCity.City.Name}");
+            // Überprüfen, ob die Partnerstadt bereits eine Party mit der aktuellen Stadt veranstaltet hat
+            if (!organizedParties.Any(op => op.City == partnerCity.City.Name && op.Parties.Any(p => p.Contains(partnersCity.City.Name))))
+            {
+                // Fügen Sie die Party in die Liste der Partys der veranstaltenden Stadt ein
+                cityParties.Add($"Party with {partnerCity.City.Name}");
 
-            // Reduzieren Sie die Kapazität der veranstaltenden Stadt
-            partnersCity.City.PartyCapacity--;
+                // Reduzieren Sie die Kapazität der veranstaltenden Stadt
+                partnersCity.City.PartyCapacity--;
+
+               
+                
+            }
         }
     }
 
@@ -123,5 +127,5 @@ foreach (var partnersCity in partnersCitiesList)
 // Ausgabe der organisierten Partys für jede Stadt
 foreach (var (city, parties) in organizedParties)
 {
-    Console.WriteLine($"City: {city}, Parties: {string.Join(", ", parties)}");
+    Console.WriteLine($"City: {city}, Parties: {string.Join(", ", parties)} , Party-Counter: {parties.Count}" );
 }
